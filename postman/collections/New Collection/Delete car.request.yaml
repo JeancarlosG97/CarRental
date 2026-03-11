@@ -1,0 +1,8 @@
+$kind: http-request
+name: Delete car
+url: http://localhost:8080/cars
+method: GET
+body:
+  type: json
+  content: ""
+order: 1773188520926
