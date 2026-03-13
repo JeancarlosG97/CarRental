@@ -1,9 +1,13 @@
 package com.jean.carrental.Service;
 
+import com.jean.carrental.Exception.CarNotFoundException;
+import com.jean.carrental.Exception.CustomerNotFoundException;
 import com.jean.carrental.Exception.RentalNotFoundException;
 import com.jean.carrental.Repository.CarRepository;
+import com.jean.carrental.Repository.CustomerRepository;
 import com.jean.carrental.Repository.RentalRepository;
 import com.jean.carrental.model.Car;
+import com.jean.carrental.model.Customer;
 import com.jean.carrental.model.Rental;
 import org.springframework.stereotype.Service;
 
@@ -14,10 +18,12 @@ public class RentalService {
 
     private final RentalRepository rentalRepository;
     private final CarRepository carRepository;
+    private final CustomerRepository customerRepository;
 
-    public RentalService(RentalRepository rentalRepository, CarRepository carRepository) {
+    public RentalService(RentalRepository rentalRepository, CarRepository carRepository, CustomerRepository customerRepository) {
         this.rentalRepository = rentalRepository;
         this.carRepository = carRepository;
+        this.customerRepository = customerRepository;
     }
 
     public List<Rental> getAllRentals() {
@@ -31,7 +37,11 @@ public class RentalService {
 
     public Rental addRental(Rental rental) {
 
-        Car car = rental.getCar();
+        Car car = carRepository.findById(rental.getCar().getId())
+                .orElseThrow(() -> new CarNotFoundException(rental.getCar().getId()));
+
+        Customer customer = customerRepository.findById(rental.getCustomer().getId())
+                .orElseThrow(() -> new CustomerNotFoundException(rental.getCustomer().getId()));
 
         if (!car.isAvailable()) {
             throw new RuntimeException("Car is not available to rent at the moment.");
@@ -40,7 +50,10 @@ public class RentalService {
         car.setAvailable(false);
         carRepository.save(car);
 
+        rental.setCar(car);
+        rental.setCustomer(customer);
         rental.setReturned(false);
+
         return rentalRepository.save(rental);
     }
 
@@ -48,8 +61,14 @@ public class RentalService {
         Rental existingRental = rentalRepository.findById(id)
                 .orElseThrow(() -> new RentalNotFoundException(id));
 
-        existingRental.setCar(updatedRental.getCar());
-        existingRental.setCustomer(updatedRental.getCustomer());
+        Car car = carRepository.findById(updatedRental.getCar().getId())
+                .orElseThrow(() -> new CarNotFoundException(updatedRental.getCar().getId()));
+
+        Customer customer = customerRepository.findById(updatedRental.getCustomer().getId())
+                .orElseThrow(() -> new CustomerNotFoundException(updatedRental.getCustomer().getId()));
+
+        existingRental.setCar(car);
+        existingRental.setCustomer(customer);
         existingRental.setRentalDate(updatedRental.getRentalDate());
         existingRental.setReturnDate(updatedRental.getReturnDate());
         existingRental.setPrice(updatedRental.getPrice());
