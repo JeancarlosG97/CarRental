@@ -29,7 +29,7 @@ public class CarService {
         return carRepository.save(car);
     }
 
-    public Car UpdateCar(int id, Car updatedCar) {
+    public Car updateCar(int id, Car updatedCar) {
         Car existingCar = carRepository.findById(id)
                 .orElseThrow(() -> new CarNotFoundException(id));
 

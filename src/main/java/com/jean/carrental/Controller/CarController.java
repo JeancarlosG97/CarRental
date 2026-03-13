@@ -36,7 +36,7 @@ public class CarController {
 
     @PutMapping("/{id}")
     public Car updateCar(@PathVariable int id, @Valid @RequestBody Car car) {
-        return carService.UpdateCar(id, car);
+        return carService.updateCar(id, car);
     }
 
     @DeleteMapping("/{id}")
