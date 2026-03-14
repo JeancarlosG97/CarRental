@@ -1,6 +1,7 @@
 package com.jean.carrental.Controller;
 
 import com.jean.carrental.Service.CustomerService;
+import com.jean.carrental.dto.CustomerDTO;
 import com.jean.carrental.model.Customer;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -19,18 +20,18 @@ public class CustomerController {
     }
 
     @GetMapping
-    public List<Customer> getAllCustomers() {
+    public List<CustomerDTO> getAllCustomers() {
         return customerService.getAllCustomers();
     }
 
     @GetMapping("/{id}")
-    public Customer getCustomerById(@PathVariable int id) {
+    public CustomerDTO getCustomerById(@PathVariable int id) {
         return customerService.getCustomerById(id);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Customer addCustomer(@Valid @RequestBody Customer customer) {
+    public CustomerDTO addCustomer(@Valid @RequestBody Customer customer) {
         return customerService.addCustomer(customer);
     }
 

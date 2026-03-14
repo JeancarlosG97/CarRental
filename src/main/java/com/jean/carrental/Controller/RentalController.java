@@ -1,6 +1,7 @@
 package com.jean.carrental.Controller;
 
 import com.jean.carrental.Service.RentalService;
+import com.jean.carrental.dto.RentalDTO;
 import com.jean.carrental.model.Rental;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -19,23 +20,23 @@ public class RentalController {
     }
 
     @GetMapping
-    public List<Rental> getAllRentals() {
+    public List<RentalDTO> getAllRentals() {
         return rentalService.getAllRentals();
     }
 
     @GetMapping("/{id}")
-    public Rental getRentalById(@PathVariable int id) {
+    public RentalDTO getRentalById(@PathVariable int id) {
         return rentalService.getRentalById(id);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Rental addRental(@Valid @RequestBody Rental rental) {
+    public RentalDTO addRental(@Valid @RequestBody Rental rental) {
         return rentalService.addRental(rental);
     }
 
     @PutMapping("/{id}")
-    public Rental updateRental(@PathVariable int id, @Valid @RequestBody Rental rental) {
+    public RentalDTO updateRental(@PathVariable int id, @Valid @RequestBody Rental rental) {
         return rentalService.updateRental(id, rental);
     }
 

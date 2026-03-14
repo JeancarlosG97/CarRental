@@ -1,11 +1,13 @@
 package com.jean.carrental.Service;
 
+import com.jean.carrental.dto.CustomerDTO;
 import com.jean.carrental.Exception.CustomerNotFoundException;
 import com.jean.carrental.Repository.CustomerRepository;
 import com.jean.carrental.model.Customer;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CustomerService {
@@ -16,17 +18,22 @@ public class CustomerService {
         this.customerRepository = customerRepository;
     }
 
-    public List<Customer> getAllCustomers() {
-        return customerRepository.findAll();
+    public List<CustomerDTO> getAllCustomers() {
+        return customerRepository.findAll()
+                .stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
     }
 
-    public Customer getCustomerById(int id) {
-        return customerRepository.findById(id)
+    public CustomerDTO getCustomerById(int id) {
+        Customer customer = customerRepository.findById(id)
                 .orElseThrow(() -> new CustomerNotFoundException(id));
+        return convertToDTO(customer);
     }
 
-    public Customer addCustomer(Customer customer) {
-        return customerRepository.save(customer);
+    public CustomerDTO addCustomer(Customer customer) {
+        Customer savedCustomer = customerRepository.save(customer);
+        return convertToDTO(savedCustomer);
     }
 
     public Customer updateCustomer(int id, Customer updatedCustomer) {
@@ -45,5 +52,14 @@ public class CustomerService {
                 .orElseThrow(() -> new CustomerNotFoundException(id));
 
         customerRepository.delete(customer);
+    }
+
+    private CustomerDTO convertToDTO(Customer customer) {
+        return new CustomerDTO(
+                customer.getId(),
+                customer.getName(),
+                customer.getEmail(),
+                customer.getPhoneNumber()
+        );
     }
 }

@@ -1,6 +1,7 @@
 package com.jean.carrental.Controller;
 
 import com.jean.carrental.Service.CarService;
+import com.jean.carrental.dto.CarDTO;
 import com.jean.carrental.model.Car;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -19,23 +20,23 @@ public class CarController {
     }
 
     @GetMapping
-    public List<Car> getAllCars() {
+    public List<CarDTO> getAllCars() {
         return carService.getAllCars();
     }
 
     @GetMapping("/{id}")
-    public Car getCarById(@PathVariable int id) {
+    public CarDTO getCarById(@PathVariable int id) {
         return carService.getCarById(id);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Car addCar(@Valid @RequestBody Car car) {
+    public CarDTO addCar(@Valid @RequestBody Car car) {
         return carService.addCar(car);
     }
 
     @PutMapping("/{id}")
-    public Car updateCar(@PathVariable int id, @Valid @RequestBody Car car) {
+    public CarDTO updateCar(@PathVariable int id, @Valid @RequestBody Car car) {
         return carService.updateCar(id, car);
     }
 
