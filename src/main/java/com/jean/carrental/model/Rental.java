@@ -22,7 +22,6 @@ public class Rental {
 
     private LocalDate rentalDate;
     private LocalDate returnDate;
-
     private double price;
     private boolean returned;
 

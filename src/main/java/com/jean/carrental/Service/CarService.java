@@ -2,10 +2,12 @@ package com.jean.carrental.Service;
 
 import com.jean.carrental.Exception.CarNotFoundException;
 import com.jean.carrental.Repository.CarRepository;
+import com.jean.carrental.dto.CarDTO;
 import com.jean.carrental.model.Car;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CarService {
@@ -16,20 +18,25 @@ public class CarService {
         this.carRepository = carRepository;
     }
 
-    public List<Car> getAllCars() {
-        return carRepository.findAll();
+    public List<CarDTO> getAllCars() {
+        return carRepository.findAll()
+                .stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
     }
 
-    public Car getCarById(int id) {
-        return carRepository.findById(id)
+    public CarDTO getCarById(int id) {
+        Car car = carRepository.findById(id)
                 .orElseThrow(() -> new CarNotFoundException(id));
+        return convertToDTO(car);
     }
 
-    public Car addCar(Car car) {
-        return carRepository.save(car);
+    public CarDTO addCar(Car car) {
+        Car savedCar = carRepository.save(car);
+        return convertToDTO(savedCar);
     }
 
-    public Car updateCar(int id, Car updatedCar) {
+    public CarDTO updateCar(int id, Car updatedCar) {
         Car existingCar = carRepository.findById(id)
                 .orElseThrow(() -> new CarNotFoundException(id));
 
@@ -39,7 +46,8 @@ public class CarService {
         existingCar.setPricePerDay(updatedCar.getPricePerDay());
         existingCar.setAvailable(updatedCar.isAvailable());
 
-        return carRepository.save(existingCar);
+        Car savedCar = carRepository.save(existingCar);
+        return convertToDTO(savedCar);
     }
 
     public void deleteCar(int id) {
@@ -47,5 +55,16 @@ public class CarService {
                 .orElseThrow(() -> new CarNotFoundException(id));
 
         carRepository.delete(car);
+    }
+
+    public CarDTO convertToDTO(Car car) {
+        return new CarDTO(
+                car.getId(),
+                car.getMake(),
+                car.getModel(),
+                car.getYear(),
+                car.getPricePerDay(),
+                car.isAvailable()
+        );
     }
 }

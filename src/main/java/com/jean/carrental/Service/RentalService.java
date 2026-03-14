@@ -6,12 +6,14 @@ import com.jean.carrental.Exception.RentalNotFoundException;
 import com.jean.carrental.Repository.CarRepository;
 import com.jean.carrental.Repository.CustomerRepository;
 import com.jean.carrental.Repository.RentalRepository;
+import com.jean.carrental.dto.RentalDTO;
 import com.jean.carrental.model.Car;
 import com.jean.carrental.model.Customer;
 import com.jean.carrental.model.Rental;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class RentalService {
@@ -26,16 +28,20 @@ public class RentalService {
         this.customerRepository = customerRepository;
     }
 
-    public List<Rental> getAllRentals() {
-        return rentalRepository.findAll();
+    public List<RentalDTO> getAllRentals() {
+        return rentalRepository.findAll()
+                .stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
     }
 
-    public Rental getRentalById(int id) {
-        return rentalRepository.findById(id)
+    public RentalDTO getRentalById(int id) {
+        Rental rental = rentalRepository.findById(id)
                 .orElseThrow(() -> new RentalNotFoundException(id));
+        return convertToDTO(rental);
     }
 
-    public Rental addRental(Rental rental) {
+    public RentalDTO addRental(Rental rental) {
 
         Car car = carRepository.findById(rental.getCar().getId())
                 .orElseThrow(() -> new CarNotFoundException(rental.getCar().getId()));
@@ -54,10 +60,11 @@ public class RentalService {
         rental.setCustomer(customer);
         rental.setReturned(false);
 
-        return rentalRepository.save(rental);
+        Rental savedRental = rentalRepository.save(rental);
+        return convertToDTO(savedRental);
     }
 
-    public Rental updateRental(int id, Rental updatedRental) {
+    public RentalDTO updateRental(int id, Rental updatedRental) {
         Rental existingRental = rentalRepository.findById(id)
                 .orElseThrow(() -> new RentalNotFoundException(id));
 
@@ -74,7 +81,8 @@ public class RentalService {
         existingRental.setPrice(updatedRental.getPrice());
         existingRental.setReturned(updatedRental.isReturned());
 
-        return rentalRepository.save(existingRental);
+        Rental savedRental = rentalRepository.save(existingRental);
+        return convertToDTO(savedRental);
     }
 
     public void deleteRental(int id) {
@@ -86,5 +94,19 @@ public class RentalService {
         carRepository.save(car);
 
         rentalRepository.delete(rental);
+    }
+
+    private RentalDTO convertToDTO(Rental rental) {
+        return new RentalDTO(
+                rental.getId(),
+                rental.getCustomer().getName(),
+                rental.getCustomer().getEmail(),
+                rental.getCar().getMake(),
+                rental.getCar().getModel(),
+                rental.getRentalDate(),
+                rental.getReturnDate(),
+                rental.getPrice(),
+                rental.isReturned()
+        );
     }
 }
