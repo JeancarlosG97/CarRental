@@ -11,23 +11,26 @@ public class RentalDTO {
     private String carModel;
     private LocalDate rentalDate;
     private LocalDate returnDate;
+    private double price;
     private boolean returned;
 
     public RentalDTO(int rentalID,
-                     String customerEmail,
                      String customerName,
+                     String customerEmail,
                      String carMake,
                      String carModel,
                      LocalDate rentalDate,
                      LocalDate returnDate,
-                     double price, boolean returned) {
+                     double price,
+                     boolean returned) {
         this.rentalID = rentalID;
-        this.customerEmail = customerEmail;
         this.customerName = customerName;
+        this.customerEmail = customerEmail;
         this.carMake = carMake;
         this.carModel = carModel;
         this.rentalDate = rentalDate;
         this.returnDate = returnDate;
+        this.price = price;
         this.returned = returned;
     }
 

@@ -1,6 +1,6 @@
-package com.jean.carrental.Controller;
+package com.jean.carrental.controller;
 
-import com.jean.carrental.Service.CustomerService;
+import com.jean.carrental.service.CustomerService;
 import com.jean.carrental.dto.CustomerDTO;
 import com.jean.carrental.model.Customer;
 import jakarta.validation.Valid;
@@ -36,7 +36,7 @@ public class CustomerController {
     }
 
     @PutMapping("/{id}")
-    public Customer updateCustomer(@PathVariable int id, @Valid @RequestBody Customer customer) {
+    public CustomerDTO updateCustomer(@PathVariable int id, @Valid @RequestBody Customer customer) {
         return customerService.updateCustomer(id, customer);
     }
 

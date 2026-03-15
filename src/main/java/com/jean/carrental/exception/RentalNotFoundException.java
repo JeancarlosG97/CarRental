@@ -1,4 +1,4 @@
-package com.jean.carrental.Exception;
+package com.jean.carrental.exception;
 
 public class RentalNotFoundException extends RuntimeException{
     public RentalNotFoundException(int id) {

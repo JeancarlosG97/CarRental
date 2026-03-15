@@ -1,8 +1,8 @@
-package com.jean.carrental.Service;
+package com.jean.carrental.service;
 
 import com.jean.carrental.dto.CustomerDTO;
-import com.jean.carrental.Exception.CustomerNotFoundException;
-import com.jean.carrental.Repository.CustomerRepository;
+import com.jean.carrental.exception.CustomerNotFoundException;
+import com.jean.carrental.repository.CustomerRepository;
 import com.jean.carrental.model.Customer;
 import org.springframework.stereotype.Service;
 
@@ -36,7 +36,7 @@ public class CustomerService {
         return convertToDTO(savedCustomer);
     }
 
-    public Customer updateCustomer(int id, Customer updatedCustomer) {
+    public CustomerDTO updateCustomer(int id, Customer updatedCustomer) {
         Customer existingCustomer = customerRepository.findById(id)
                 .orElseThrow(() -> new CustomerNotFoundException(id));
 
@@ -44,7 +44,8 @@ public class CustomerService {
         existingCustomer.setEmail(updatedCustomer.getEmail());
         existingCustomer.setPhoneNumber(updatedCustomer.getPhoneNumber());
 
-        return customerRepository.save(existingCustomer);
+        Customer savedCustomer = customerRepository.save(existingCustomer);
+        return convertToDTO(savedCustomer);
     }
 
     public void deleteCustomer(int id) {
