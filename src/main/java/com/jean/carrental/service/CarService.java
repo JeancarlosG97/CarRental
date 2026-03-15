@@ -1,7 +1,7 @@
-package com.jean.carrental.Service;
+package com.jean.carrental.service;
 
-import com.jean.carrental.Exception.CarNotFoundException;
-import com.jean.carrental.Repository.CarRepository;
+import com.jean.carrental.exception.CarNotFoundException;
+import com.jean.carrental.repository.CarRepository;
 import com.jean.carrental.dto.CarDTO;
 import com.jean.carrental.model.Car;
 import org.springframework.stereotype.Service;

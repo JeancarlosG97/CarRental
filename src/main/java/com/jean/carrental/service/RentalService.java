@@ -1,11 +1,11 @@
-package com.jean.carrental.Service;
+package com.jean.carrental.service;
 
-import com.jean.carrental.Exception.CarNotFoundException;
-import com.jean.carrental.Exception.CustomerNotFoundException;
-import com.jean.carrental.Exception.RentalNotFoundException;
-import com.jean.carrental.Repository.CarRepository;
-import com.jean.carrental.Repository.CustomerRepository;
-import com.jean.carrental.Repository.RentalRepository;
+import com.jean.carrental.exception.CarNotFoundException;
+import com.jean.carrental.exception.CustomerNotFoundException;
+import com.jean.carrental.exception.RentalNotFoundException;
+import com.jean.carrental.repository.CarRepository;
+import com.jean.carrental.repository.CustomerRepository;
+import com.jean.carrental.repository.RentalRepository;
 import com.jean.carrental.dto.RentalDTO;
 import com.jean.carrental.model.Car;
 import com.jean.carrental.model.Customer;

@@ -1,6 +1,6 @@
-package com.jean.carrental.Controller;
+package com.jean.carrental.controller;
 
-import com.jean.carrental.Service.CarService;
+import com.jean.carrental.service.CarService;
 import com.jean.carrental.dto.CarDTO;
 import com.jean.carrental.model.Car;
 import jakarta.validation.Valid;

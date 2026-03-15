@@ -1,4 +1,4 @@
-package com.jean.carrental.Repository;
+package com.jean.carrental.repository;
 
 import com.jean.carrental.model.Rental;
 import org.springframework.data.jpa.repository.JpaRepository;

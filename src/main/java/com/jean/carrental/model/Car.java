@@ -17,13 +17,13 @@ public class Car {
     @NotBlank(message = "Make cannot be blank")
     private String make;
 
-    @NotBlank(message = "Make cannot be blank")
+    @NotBlank(message = "Model cannot be blank")
     private String model;
 
-    @Positive(message = "")
+    @Positive(message = "Year must be a positive number")
     private int year;
 
-    @Positive(message = "")
+    @Positive(message = "Price per day must be a positive number")
     private double pricePerDay;
 
     private boolean available = true;

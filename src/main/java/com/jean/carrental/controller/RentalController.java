@@ -1,6 +1,6 @@
-package com.jean.carrental.Controller;
+package com.jean.carrental.controller;
 
-import com.jean.carrental.Service.RentalService;
+import com.jean.carrental.service.RentalService;
 import com.jean.carrental.dto.RentalDTO;
 import com.jean.carrental.model.Rental;
 import jakarta.validation.Valid;
