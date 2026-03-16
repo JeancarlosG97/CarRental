@@ -29,6 +29,7 @@ public class RentalService {
         this.customerRepository = customerRepository;
     }
 
+    // Get all rentals on file
     public List<RentalDTO> getAllRentals() {
         return rentalRepository.findAll()
                 .stream()
@@ -36,12 +37,14 @@ public class RentalService {
                 .collect(Collectors.toList());
     }
 
+    // Get rentals by id
     public RentalDTO getRentalById(int id) {
         Rental rental = rentalRepository.findById(id)
                 .orElseThrow(() -> new RentalNotFoundException(id));
         return convertToDTO(rental);
     }
 
+    // Add a new rental
     public RentalDTO addRental(Rental rental) {
 
         Car car = carRepository.findById(rental.getCar().getId())
@@ -65,6 +68,7 @@ public class RentalService {
         return convertToDTO(savedRental);
     }
 
+    // Update an existing rental found by id
     public RentalDTO updateRental(int id, Rental updatedRental) {
         Rental existingRental = rentalRepository.findById(id)
                 .orElseThrow(() -> new RentalNotFoundException(id));
@@ -86,6 +90,7 @@ public class RentalService {
         return convertToDTO(savedRental);
     }
 
+    // Delete a rental
     public void deleteRental(int id) {
         Rental rental = rentalRepository.findById(id)
                 .orElseThrow(() -> new RentalNotFoundException(id));
@@ -97,6 +102,7 @@ public class RentalService {
         rentalRepository.delete(rental);
     }
 
+    // Converting entity info to DTO
     public RentalDTO convertToDTO(Rental rental) {
         return new RentalDTO(
                 rental.getId(),
@@ -111,7 +117,8 @@ public class RentalService {
         );
     }
 
-    public RentalDTO rentCar(int customerId, int carId) {
+    // Rent a car
+    public RentalDTO rentCar(int customerId, int carId, int rentalDays) {
         Car car = carRepository.findById(carId)
                 .orElseThrow(() -> new CarNotFoundException(carId));
 
@@ -125,14 +132,26 @@ public class RentalService {
         Rental newRental = new Rental();
         newRental.setCar(car);
         newRental.setCustomer(customer);
-        newRental.setRentalDate(LocalDate.now());
+
+        LocalDate today = LocalDate.now();
+        newRental.setRentalDate(today);
+
+        LocalDate returnDate = today.plusDays(rentalDays);
+        newRental.setReturnDate(returnDate);
+
+        double totalPrice = car.getPricePerDay() * rentalDays;
+        newRental.setPrice(totalPrice);
+
         newRental.setReturned(false);
-        newRental.setPrice(car.getPricePerDay());
+        car.setAvailable(false);
+
+        carRepository.save(car);
         rentalRepository.save(newRental);
 
         return convertToDTO(newRental);
     }
 
+    // Return a car
     public RentalDTO returnRental(int id) {
 
         Rental rental = rentalRepository.findById(id)
