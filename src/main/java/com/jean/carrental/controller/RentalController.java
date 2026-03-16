@@ -45,10 +45,10 @@ public class RentalController {
         return rentalService.returnRental(id);
     }
 
-    @PostMapping("/{customerId}/{carId}")
+    @PostMapping("/{customerId}/{carId}/{rentalDays}")
     @ResponseStatus(HttpStatus.CREATED)
-    public RentalDTO rentCar(@PathVariable int customerId, @PathVariable int carId){
-        return rentalService.rentCar(customerId, carId);
+    public RentalDTO rentCar(@PathVariable int customerId, @PathVariable int carId, @PathVariable int rentalDays){
+        return rentalService.rentCar(customerId, carId, rentalDays);
     }
 
     @DeleteMapping("/{id}")
