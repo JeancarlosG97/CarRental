@@ -97,4 +97,12 @@ public class RentalDTO {
     public void setReturned(boolean returned) {
         this.returned = returned;
     }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
 }

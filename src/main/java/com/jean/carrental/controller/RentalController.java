@@ -40,6 +40,17 @@ public class RentalController {
         return rentalService.updateRental(id, rental);
     }
 
+    @PutMapping("/{id}/return")
+    public RentalDTO returnRental(@PathVariable int id) {
+        return rentalService.returnRental(id);
+    }
+
+    @PostMapping("/{customerId}/{carId}")
+    @ResponseStatus(HttpStatus.CREATED)
+    public RentalDTO rentCar(@PathVariable int customerId, @PathVariable int carId){
+        return rentalService.rentCar(customerId, carId);
+    }
+
     @DeleteMapping("/{id}")
     public void deleteRental(@PathVariable int id) {
         rentalService.deleteRental(id);

@@ -12,6 +12,7 @@ import com.jean.carrental.model.Customer;
 import com.jean.carrental.model.Rental;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -96,7 +97,7 @@ public class RentalService {
         rentalRepository.delete(rental);
     }
 
-    private RentalDTO convertToDTO(Rental rental) {
+    public RentalDTO convertToDTO(Rental rental) {
         return new RentalDTO(
                 rental.getId(),
                 rental.getCustomer().getName(),
@@ -108,5 +109,43 @@ public class RentalService {
                 rental.getPrice(),
                 rental.isReturned()
         );
+    }
+
+    public RentalDTO rentCar(int customerId, int carId) {
+        Car car = carRepository.findById(carId)
+                .orElseThrow(() -> new CarNotFoundException(carId));
+
+        Customer customer = customerRepository.findById(customerId)
+                .orElseThrow(() -> new CustomerNotFoundException(customerId));
+
+        if(!car.isAvailable()) {
+            throw new RuntimeException("Car is not available to rent");
+        }
+
+        Rental newRental = new Rental();
+        newRental.setCar(car);
+        newRental.setCustomer(customer);
+        newRental.setRentalDate(LocalDate.now());
+        newRental.setReturned(false);
+        newRental.setPrice(car.getPricePerDay());
+        rentalRepository.save(newRental);
+
+        return convertToDTO(newRental);
+    }
+
+    public RentalDTO returnRental(int id) {
+
+        Rental rental = rentalRepository.findById(id)
+                .orElseThrow(() -> new RentalNotFoundException(id));
+
+                rental.setReturned(true);
+
+                Car car = rental.getCar();
+                car.setAvailable(true);
+
+                carRepository.save(car);
+
+                Rental updatedRental = rentalRepository.save(rental);
+                return convertToDTO(updatedRental);
     }
 }
