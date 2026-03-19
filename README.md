@@ -2,7 +2,7 @@
 
 ## Overview
 A **Spring Boot** backend REST API for managing cars, customers, and rentals.  
-Demonstrates clean architecture, RESTful design, validation, error handling, and MySQL integration.
+Demonstrates clean architecture, RESTful design, validation, error handling, JWT-based authentication, and MySQL integration.
 
 ---
 
@@ -10,15 +10,16 @@ Demonstrates clean architecture, RESTful design, validation, error handling, and
 - **Backend:** Spring Boot  
 - **Database:** MySQL (`CarRental`)  
 - **API Testing:** Postman  
-- **Version Control:** Git  
-- **Other Features:** DTOs, `@Valid` validation, custom exceptions, `ResponseEntity` HTTP responses  
+- **Version Control:** Git / Github 
+- **Other Features:** DTOs, `@Valid` validation, custom exceptions, JWT authentication, ResponseEntity HTTP responses  
 
 ---
 
 ## Key Features
 - **Cars Management:** CRUD operations with availability tracking  
 - **Customers Management:** CRUD operations with input validation  
-- **Rentals Management:** Create rentals, check availability, update rental status  
+- **Rentals Management:** Create rentals, check availability, update rental status
+- **User Authentification: **JWT login with roles(USER, ADMIN) 
 - **Error Handling:** Centralized custom exceptions with meaningful HTTP responses  
 - **RESTful Design:** Thin controllers with all business logic in the service layer  
 
