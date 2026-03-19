@@ -29,19 +29,20 @@ Authentication Example
 
 Login Request
 
-  POST /auth/login
-  Content-Type: application/json
+-POST /auth/login
+-Content-Type: application/json
     {
       "username": "jean"
       "password": "1234"
     }
 
-Login Response
+-Login Response
     {
       "id": 1,
       "username": "jean"
       "role": "ADMIN",
-      "token":      "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqZWFuIiwicm9sZSI6IkFETUlOIiwiaWF0IjoxNjc4MzgyNTYyLCJleHAiOjE2NzgzODYxNjJ9.xxxx"
+      "token":
+    }  "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqZWFuIiwicm9sZSI6IkFETUlOIiwiaWF0IjoxNjc4MzgyNTYyLCJleHAiOjE2NzgzODYxNjJ9.xxxx"
 
 
 ## Architecture Highlights
