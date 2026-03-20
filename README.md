@@ -25,18 +25,18 @@ Demonstrates clean architecture, RESTful design, validation, error handling, JWT
 
 ---
 
-Authentication Example
+**Authentication Example
 
-Login Request
+**Login Request
 
--POST /auth/login
--Content-Type: application/json
+- **POST /auth/login
+- **Content-Type: application/json
     {
       "username": "jean"
       "password": "1234"
     }
 
--Login Response
+- **Login Response
     {
       "id": 1,
       "username": "jean"
