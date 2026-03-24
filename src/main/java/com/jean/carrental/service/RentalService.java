@@ -10,6 +10,7 @@ import com.jean.carrental.dto.RentalDTO;
 import com.jean.carrental.model.Car;
 import com.jean.carrental.model.Customer;
 import com.jean.carrental.model.Rental;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class RentalService {
 
     private final RentalRepository rentalRepository;
@@ -31,6 +33,8 @@ public class RentalService {
 
     // Get all rentals on file
     public List<RentalDTO> getAllRentals() {
+        log.info("Fetching all rentals");
+
         return rentalRepository.findAll()
                 .stream()
                 .map(this::convertToDTO)
@@ -39,45 +43,71 @@ public class RentalService {
 
     // Get rentals by id
     public RentalDTO getRentalById(int id) {
+        log.info("Fetching rentals with id: {}", id);
+
         Rental rental = rentalRepository.findById(id)
-                .orElseThrow(() -> new RentalNotFoundException(id));
+                .orElseThrow(() -> {
+                    log.warn("Rental with id {} not found", id);
+                    return new RentalNotFoundException(id);
+                });
         return convertToDTO(rental);
     }
 
     // Add a new rental
     public RentalDTO addRental(Rental rental) {
+        log.info("Creating rental for customer {} and car {}", rental.getCustomer().getId(), rental.getCar().getId());
 
         Car car = carRepository.findById(rental.getCar().getId())
-                .orElseThrow(() -> new CarNotFoundException(rental.getCar().getId()));
+                .orElseThrow(() -> {
+                    log.warn("Car with id {} not found", rental.getCar().getId());
+                    return new CarNotFoundException(rental.getCar().getId());
+                });
 
         Customer customer = customerRepository.findById(rental.getCustomer().getId())
-                .orElseThrow(() -> new CustomerNotFoundException(rental.getCustomer().getId()));
+                .orElseThrow(() -> {
+                    log.warn("Customer with id {} not found", rental.getCustomer().getId());
+                    return new CustomerNotFoundException(rental.getCustomer().getId());
+                });
 
         if (!car.isAvailable()) {
+            log.info("Car with id {} was not available to rent by customer with id {}", car.getId(), customer.getId());
             throw new RuntimeException("Car is not available to rent at the moment.");
         }
 
         car.setAvailable(false);
         carRepository.save(car);
+        log.info("Car with id {} set to not available", car.getId());
 
         rental.setCar(car);
         rental.setCustomer(customer);
         rental.setReturned(false);
 
         Rental savedRental = rentalRepository.save(rental);
+        log.info("Rental created successfully with id {}, customer {}, car id {}", savedRental.getId(), savedRental.getCustomer().getId(), savedRental.getCar().getId());
         return convertToDTO(savedRental);
     }
 
     // Update an existing rental found by id
     public RentalDTO updateRental(int id, Rental updatedRental) {
+        log.info("Updating rental with id: {}", id);
+
         Rental existingRental = rentalRepository.findById(id)
-                .orElseThrow(() -> new RentalNotFoundException(id));
+                .orElseThrow(() -> {
+                    log.warn("Rental with id {} not found for update", id);
+                    return new RentalNotFoundException(id);
+                });
 
         Car car = carRepository.findById(updatedRental.getCar().getId())
-                .orElseThrow(() -> new CarNotFoundException(updatedRental.getCar().getId()));
+                .orElseThrow(() -> {
+                    log.warn("Car with id {} not found during rental update", updatedRental.getCar().getId());
+                    return new CarNotFoundException(updatedRental.getCar().getId());
+                });
 
         Customer customer = customerRepository.findById(updatedRental.getCustomer().getId())
-                .orElseThrow(() -> new CustomerNotFoundException(updatedRental.getCustomer().getId()));
+                .orElseThrow(() -> {
+                    log.warn("Customer with id {} not found during rental update", updatedRental.getCustomer().getId());
+                    return new CustomerNotFoundException(updatedRental.getCustomer().getId());
+                });
 
         existingRental.setCar(car);
         existingRental.setCustomer(customer);
@@ -87,19 +117,24 @@ public class RentalService {
         existingRental.setReturned(updatedRental.isReturned());
 
         Rental savedRental = rentalRepository.save(existingRental);
+        log.info("Rental with id {} updated successfully", savedRental.getId());
         return convertToDTO(savedRental);
     }
 
     // Delete a rental
     public void deleteRental(int id) {
         Rental rental = rentalRepository.findById(id)
-                .orElseThrow(() -> new RentalNotFoundException(id));
+                .orElseThrow(() -> {
+                    log.warn("Rental deletion with id {} not found", id);
+                    return new RentalNotFoundException(id);
+                });
 
         Car car = rental.getCar();
         car.setAvailable(true);
         carRepository.save(car);
 
         rentalRepository.delete(rental);
+        log.info("Rental with id {} deleted successfully", id);
     }
 
     // Converting entity info to DTO
@@ -125,7 +160,7 @@ public class RentalService {
         Customer customer = customerRepository.findById(customerId)
                 .orElseThrow(() -> new CustomerNotFoundException(customerId));
 
-        if(!car.isAvailable()) {
+        if (!car.isAvailable()) {
             throw new RuntimeException("Car is not available to rent");
         }
 
@@ -157,14 +192,14 @@ public class RentalService {
         Rental rental = rentalRepository.findById(id)
                 .orElseThrow(() -> new RentalNotFoundException(id));
 
-                rental.setReturned(true);
+        rental.setReturned(true);
 
-                Car car = rental.getCar();
-                car.setAvailable(true);
+        Car car = rental.getCar();
+        car.setAvailable(true);
 
-                carRepository.save(car);
+        carRepository.save(car);
 
-                Rental updatedRental = rentalRepository.save(rental);
-                return convertToDTO(updatedRental);
+        Rental updatedRental = rentalRepository.save(rental);
+        return convertToDTO(updatedRental);
     }
 }
