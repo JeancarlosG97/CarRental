@@ -6,18 +6,16 @@ import com.jean.carrental.model.Role;
 import com.jean.carrental.repository.CustomerRepository;
 import com.jean.carrental.model.Customer;
 import jakarta.validation.Valid;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.slf4j.Logger;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class CustomerService {
-
-    private static final Logger logger = LoggerFactory.getLogger(CustomerService.class);
 
     public final CustomerRepository customerRepository;
 
@@ -26,6 +24,8 @@ public class CustomerService {
     }
 
     public List<CustomerDTO> getAllCustomers() {
+        log.info("Fetching all customers");
+
         return customerRepository.findAll()
                 .stream()
                 .map(this::convertToDTO)
@@ -33,47 +33,58 @@ public class CustomerService {
     }
 
     public CustomerDTO getCustomerById(int id) {
+        log.info("Fetching customer with id: {}", id);
+
         Customer customer = customerRepository.findById(id)
-                .orElseThrow(() -> new CustomerNotFoundException(id));
+                .orElseThrow(() -> {
+                    log.warn("Customer with id {} not found", id);
+                    return new CustomerNotFoundException(id);
+                });
         return convertToDTO(customer);
     }
 
     public CustomerDTO addCustomer(@Valid @RequestBody Customer customer) {
-        logger.info("Attempting to add a new customer with email: {}", customer.getEmail());
-
+        log.info("Adding new customer: {}", customer.getEmail());
         customer.setRole(Role.USER);
-        logger.debug("Default role set to USER for customer: {}", customer.getEmail());
-
         Customer savedCustomer = customerRepository.save(customer);
-        logger.info("Customer successfully saved with ID: {} and role: {}", savedCustomer.getId(), savedCustomer.getRole());
+        log.info("Customer added with id: {}", savedCustomer.getId());
 
-        CustomerDTO customerDTO = convertToDTO(savedCustomer);
-        logger.debug("CustomerDTO created: {}", customerDTO);
-        
-        return customerDTO;
+        return convertToDTO(savedCustomer);
     }
 
     public CustomerDTO updateCustomer(int id, Customer updatedCustomer) {
+        log.info("Updating customer with id: {}", id);
         Customer existingCustomer = customerRepository.findById(id)
-                .orElseThrow(() -> new CustomerNotFoundException(id));
+                .orElseThrow(() -> {
+                    log.warn("Customer with id {} not found for update", id);
+                    return new CustomerNotFoundException(id);
+                });
 
         existingCustomer.setName(updatedCustomer.getName());
         existingCustomer.setEmail(updatedCustomer.getEmail());
         existingCustomer.setPhoneNumber(updatedCustomer.getPhoneNumber());
 
         Customer savedCustomer = customerRepository.save(existingCustomer);
+        log.info("Customer with id {} updated successfully", savedCustomer.getId());
         return convertToDTO(savedCustomer);
     }
 
     public void deleteCustomer(int id, Customer requester) {
+        log.info("User {} requested deletion of customer with id: {}", requester.getId(), id);
+
         if (requester.getRole() != Role.ADMIN) {
+            log.warn("Access denied for user {}: Admins only" , requester.getId());
             throw new RuntimeException("Access denied: Admins only");
         }
 
         Customer customer = customerRepository.findById(id)
-                .orElseThrow(() -> new CustomerNotFoundException(id));
+                .orElseThrow(() -> {
+                    log.warn("Customer with id {} not found for deletion", id);
+                    return new CustomerNotFoundException(id);
+                });
 
         customerRepository.delete(customer);
+        log.info("Customer with id {} deleted successfully by admin {}", id, requester.getId());
     }
 
     private CustomerDTO convertToDTO(Customer customer) {
