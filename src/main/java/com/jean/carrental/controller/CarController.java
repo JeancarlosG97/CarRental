@@ -6,6 +6,7 @@ import com.jean.carrental.model.Car;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,12 +23,14 @@ public class CarController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public List<CarDTO> getAllCars() {
         log.info("Received request to fetch all cars");
         return carService.getAllCars();
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public CarDTO getCarById(@PathVariable int id) {
         log.info("Received request to fetch car with id: {}", id);
         return carService.getCarById(id);
@@ -35,12 +38,14 @@ public class CarController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasRole('ADMIN')")
     public CarDTO addCar(@Valid @RequestBody Car car) {
         log.info("Received request to create a new car with make: {} and model: {}", car.getMake(), car.getModel());
         return carService.addCar(car);
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public CarDTO updateCar(@PathVariable int id, @Valid @RequestBody Car car) {
         log.info("Received request to update car with id: {}", id);
         return carService.updateCar(id, car);
@@ -48,6 +53,7 @@ public class CarController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasRole('ADMIN')")
     public void deleteCar(@PathVariable int id) {
         log.info("Received request to delete car with id: {}", id);
         carService.deleteCar(id);

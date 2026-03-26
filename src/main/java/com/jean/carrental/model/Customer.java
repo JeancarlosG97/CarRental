@@ -7,6 +7,7 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 @Entity
+@Table(name = "customers")
 public class Customer {
 
     @Id
@@ -22,7 +23,7 @@ public class Customer {
 
     @NotBlank(message = "Password cannot be blank")
     @Size(min = 6, message = "Password must be at least 6 characters")
-    @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\\\d)[A-Za-z\\\\d]+$", message = "Password must contain letters and numbers")
+    //@Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\\\d)[A-Za-z\\\\d]+$", message = "Password must contain letters and numbers")
     private String password;
 
     @Enumerated(EnumType.STRING)
