@@ -69,13 +69,7 @@ public class CustomerService {
         return convertToDTO(savedCustomer);
     }
 
-    public void deleteCustomer(int id, Customer requester) {
-        log.info("User {} requested deletion of customer with id: {}", requester.getId(), id);
-
-        if (requester.getRole() != Role.ADMIN) {
-            log.warn("Access denied for user {}: Admins only" , requester.getId());
-            throw new RuntimeException("Access denied: Admins only");
-        }
+    public void deleteCustomer(int id) {
 
         Customer customer = customerRepository.findById(id)
                 .orElseThrow(() -> {
@@ -84,7 +78,7 @@ public class CustomerService {
                 });
 
         customerRepository.delete(customer);
-        log.info("Customer with id {} deleted successfully by admin {}", id, requester.getId());
+        log.info("Customer with id {} deleted successfully", id);
     }
 
     private CustomerDTO convertToDTO(Customer customer) {
@@ -95,5 +89,34 @@ public class CustomerService {
                 customer.getPhoneNumber(),
                 customer.getRole().name()
         );
+    }
+
+    public CustomerDTO getCustomerByEmail(String email) {
+        log.info("Fetching customer with email: {}", email);
+
+        Customer customer = customerRepository.findByEmail(email)
+                .orElseThrow(() -> new CustomerNotFoundException("Customer not found with this email: " + email));
+
+        return convertToDTO(customer);
+    }
+
+    public CustomerDTO updateCustomerByEmail(String email, Customer updatedCustomer) {
+        log.info("Updating customer with email: {}", email);
+
+        Customer existingCustomer = customerRepository.findByEmail(email)
+                .orElseThrow(() -> {
+                    log.warn("Customer with email {} not found", email);
+                    return new CustomerNotFoundException("Customer not found with email: " + email);
+                });
+
+        // Update only the allowed fields
+        existingCustomer.setName(updatedCustomer.getName());
+        existingCustomer.setPhoneNumber(updatedCustomer.getPhoneNumber());
+        existingCustomer.setPassword(updatedCustomer.getPassword()); // optional if you allow password update
+
+        Customer savedCustomer = customerRepository.save(existingCustomer);
+        log.info("Updated customer with email: {}", email);
+
+        return convertToDTO(savedCustomer);
     }
 }
