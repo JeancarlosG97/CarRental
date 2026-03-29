@@ -74,6 +74,12 @@
             <scope>provided</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>2.5.0</version>
+        </dependency>
+
         <!-- MySQL / H2 DB if needed -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

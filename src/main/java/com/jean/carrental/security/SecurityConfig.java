@@ -23,21 +23,37 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                // Disable CSRF (since you're using JWT)
                 .csrf(csrf -> csrf.disable())
+
+                // Authorization rules
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**").permitAll() // login & register open
-                        .requestMatchers("/admin/**").hasRole("ADMIN") // admin-only
-                        .anyRequest().authenticated() // all other endpoints require login
+                        // Public endpoints
+                        .requestMatchers(
+                                "/auth/**",
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**"
+                        ).permitAll()
+
+                        // Admin-only endpoints
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+
+                        // Everything else requires authentication
+                        .anyRequest().authenticated()
                 )
+
+                // Stateless session (JWT)
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 );
 
+        // Add JWT filter before Spring Security filter
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
 
+    // Password encoder (for hashing passwords)
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
