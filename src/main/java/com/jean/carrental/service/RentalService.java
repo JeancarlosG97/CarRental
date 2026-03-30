@@ -11,8 +11,10 @@ import com.jean.carrental.model.Car;
 import com.jean.carrental.model.Customer;
 import com.jean.carrental.model.Rental;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.security.Security;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -201,5 +203,16 @@ public class RentalService {
 
         Rental updatedRental = rentalRepository.save(rental);
         return convertToDTO(updatedRental);
+    }
+
+    public List<RentalDTO> getMyRentals() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        Customer customer = customerRepository.findByEmail(email)
+                .orElseThrow(() -> new CustomerNotFoundException(email));
+
+        List<Rental> rentals = rentalRepository.findByCustomer(customer);
+
+        return rentals.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 }

@@ -72,4 +72,12 @@ public class RentalController {
         log.info("Received request to delete rental id: {}", id);
         rentalService.deleteRental(id);
     }
+
+    @GetMapping("/my")
+    @PreAuthorize("hasAnyRole('ADMIN','USER')")
+    public List<RentalDTO> getMyRentals() {
+        log.info("Received request to fetch my rentals");
+        return rentalService.getMyRentals();
+    }
+
 }
