@@ -29,7 +29,7 @@ public class CustomerController {
     @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public CustomerDTO getMyProfile(Authentication authentication) {
         String email = authentication.getName();
-        log.info("Fetching profile for user: {}", email);
+        log.info("User {} requested their own profile", email);
         return customerService.getCustomerByEmail(email);
     }
 
@@ -38,7 +38,7 @@ public class CustomerController {
     public CustomerDTO updateMyProfile(Authentication authentication,
                                        @Valid @RequestBody Customer customer) {
         String email = authentication.getName();
-        log.info("Updating profile for user: {}", email);
+        log.info("User {} updating their own profile", email);
         return customerService.updateCustomerByEmail(email, customer);
     }
 
@@ -47,14 +47,14 @@ public class CustomerController {
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
     public List<CustomerDTO> getAllCustomers() {
-        log.info("Fetching all customers (ADMIN)");
+        log.info("ADMIN requested all customers");
         return customerService.getAllCustomers();
     }
 
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public CustomerDTO getCustomerById(@PathVariable int id) {
-        log.info("Fetching customer with id: {} (ADMIN)", id);
+        log.info("ADMIN requested customer with ID {}", id);
         return customerService.getCustomerById(id);
     }
 
@@ -62,7 +62,7 @@ public class CustomerController {
     @PreAuthorize("hasRole('ADMIN')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteCustomer(@PathVariable int id) {
-        log.info("Deleting customer with id: {} (ADMIN)", id);
+        log.info("ADMIN deleting customer with ID {}", id);
         customerService.deleteCustomer(id);
     }
 }
