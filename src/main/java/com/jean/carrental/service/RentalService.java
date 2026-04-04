@@ -155,12 +155,14 @@ public class RentalService {
     }
 
     // Rent a car
-    public RentalDTO rentCar(int customerId, int carId, int rentalDays) {
+    public RentalDTO rentCar(int carId, int rentalDays) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        Customer customer = customerRepository.findByEmail(email)
+                .orElseThrow(() -> new CustomerNotFoundException(email));
+
         Car car = carRepository.findById(carId)
                 .orElseThrow(() -> new CarNotFoundException(carId));
-
-        Customer customer = customerRepository.findById(customerId)
-                .orElseThrow(() -> new CustomerNotFoundException(customerId));
 
         if (!car.isAvailable()) {
             throw new RuntimeException("Car is not available to rent");
@@ -172,7 +174,6 @@ public class RentalService {
 
         LocalDate today = LocalDate.now();
         newRental.setRentalDate(today);
-
         LocalDate returnDate = today.plusDays(rentalDays);
         newRental.setReturnDate(returnDate);
 

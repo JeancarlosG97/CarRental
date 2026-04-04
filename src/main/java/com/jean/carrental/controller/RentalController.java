@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,14 +26,14 @@ public class RentalController {
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
     public List<RentalDTO> getAllRentals() {
-        log.info("Received request to fetch all rentals");
+        log.info("ADMIN requested all rentals");
         return rentalService.getAllRentals();
     }
 
     @GetMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public RentalDTO getRentalById(@PathVariable int id) {
-        log.info("Received request to fetch rental with id: {}", id);
+        log.info("ADMIN requested rental with id: {}", id);
         return rentalService.getRentalById(id);
     }
 
@@ -40,44 +41,55 @@ public class RentalController {
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasRole('ADMIN')")
     public RentalDTO addRental(@Valid @RequestBody Rental rental) {
-        log.info("Received request to create a new rental");
+        log.info("ADMIN creating rental for customer {} and car {}", rental.getCustomer().getId(), rental.getCar().getId());
         return rentalService.addRental(rental);
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public RentalDTO updateRental(@PathVariable int id, @Valid @RequestBody Rental rental) {
-        log.info("Received request to update rental with id: {}", id);
+        log.info("ADMIN updating rental with id: {}", id);
         return rentalService.updateRental(id, rental);
     }
 
     @PutMapping("/{id}/return")
     @PreAuthorize("hasAnyRole('ADMIN','USER')")
     public RentalDTO returnRental(@PathVariable int id) {
-        log.info("Received request to return rental with id: {}", id);
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        log.info("User {} returning rental with id {}", email, id);
+        RentalDTO rentalDTO = rentalService.returnRental(id);
+        log.info("Rental returned: ID {} for customer {}", rentalDTO.getRentalID(), rentalDTO.getCustomerName());
         return rentalService.returnRental(id);
     }
 
-    @PostMapping("/{customerId}/{carId}/{rentalDays}")
+    @PostMapping("/{carId}/{rentalDays}")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAnyRole('ADMIN','USER')")
-    public RentalDTO rentCar(@PathVariable int customerId, @PathVariable int carId, @PathVariable int rentalDays){
-        log.info("Received request to rent car {} for customer {} for {} days", carId, customerId, rentalDays);
-        return rentalService.rentCar(customerId, carId, rentalDays);
+    public RentalDTO rentCar(@PathVariable int carId, @PathVariable int rentalDays) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        log.info("User {} renting  car {} for {} days", email, carId, rentalDays);
+
+        RentalDTO rentalDTO = rentalService.rentCar(carId, rentalDays);
+        log.info("Rental created: ID {} for customer {} car {}", rentalDTO.getRentalID(), rentalDTO.getCustomerName(), rentalDTO.getCarModel());
+        return rentalDTO;
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public void deleteRental(@PathVariable int id) {
-        log.info("Received request to delete rental id: {}", id);
+        log.info("ADMIN deleting rental ID {}", id);
         rentalService.deleteRental(id);
+        log.info("Rental deleted: ID {}", id);
     }
 
     @GetMapping("/my")
     @PreAuthorize("hasAnyRole('ADMIN','USER')")
     public List<RentalDTO> getMyRentals() {
-        log.info("Received request to fetch my rentals");
-        return rentalService.getMyRentals();
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        log.info("User {} requested their rentals", email);
+        List<RentalDTO> rentals = rentalService.getMyRentals();
+        log.info("Returned {} rentals for user {}", rentals.size(), email);
+        return rentals;
     }
 
 }
