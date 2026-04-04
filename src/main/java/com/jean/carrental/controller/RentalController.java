@@ -57,8 +57,6 @@ public class RentalController {
     public RentalDTO returnRental(@PathVariable int id) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         log.info("User {} returning rental with id {}", email, id);
-        RentalDTO rentalDTO = rentalService.returnRental(id);
-        log.info("Rental returned: ID {} for customer {}", rentalDTO.getRentalID(), rentalDTO.getCustomerName());
         return rentalService.returnRental(id);
     }
 
@@ -68,10 +66,7 @@ public class RentalController {
     public RentalDTO rentCar(@PathVariable int carId, @PathVariable int rentalDays) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         log.info("User {} renting  car {} for {} days", email, carId, rentalDays);
-
-        RentalDTO rentalDTO = rentalService.rentCar(carId, rentalDays);
-        log.info("Rental created: ID {} for customer {} car {}", rentalDTO.getRentalID(), rentalDTO.getCustomerName(), rentalDTO.getCarModel());
-        return rentalDTO;
+        return rentalService.rentCar(carId, rentalDays);
     }
 
     @DeleteMapping("/{id}")
@@ -87,9 +82,7 @@ public class RentalController {
     public List<RentalDTO> getMyRentals() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         log.info("User {} requested their rentals", email);
-        List<RentalDTO> rentals = rentalService.getMyRentals();
-        log.info("Returned {} rentals for user {}", rentals.size(), email);
-        return rentals;
+        return rentalService.getMyRentals();
     }
 
 }
