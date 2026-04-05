@@ -2,13 +2,13 @@ package com.jean.carrental.dto;
 
 public class LoginResponseDTO {
     private Long id;
-    private String username;
+    private String email;
     private String token;
     private String role;
 
-    public LoginResponseDTO(Long id, String username, String token, String role) {
+    public LoginResponseDTO(Long id, String email, String token, String role) {
         this.id = id;
-        this.username = username;
+        this.email = email;
         this.token = token;
         this.role = role;
     }
@@ -22,11 +22,11 @@ public class LoginResponseDTO {
     }
 
     public String getUsername() {
-        return username;
+        return email;
     }
 
     public void setUsername(String username) {
-        this.username = username;
+        this.email = email;
     }
 
     public String getToken() {
