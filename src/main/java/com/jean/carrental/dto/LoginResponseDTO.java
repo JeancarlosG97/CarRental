@@ -21,11 +21,11 @@ public class LoginResponseDTO {
         this.id = id;
     }
 
-    public String getUsername() {
+    public String getEmail() {
         return email;
     }
 
-    public void setUsername(String username) {
+    public void setEmail(String email) {
         this.email = email;
     }
 
