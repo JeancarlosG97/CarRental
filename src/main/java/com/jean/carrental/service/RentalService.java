@@ -188,6 +188,41 @@ public class RentalService {
         return convertToDTO(newRental);
     }
 
+    public RentalDTO rentCarForCustomer(int customerId, int carId, int rentalDays) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        Customer customer = customerRepository.findByEmail(email)
+                .orElseThrow(() -> new CustomerNotFoundException(email));
+
+        Car car = carRepository.findById(carId)
+                .orElseThrow(() -> new CarNotFoundException(carId));
+
+        if (!car.isAvailable()) {
+            throw new RuntimeException("Car is not available to rent");
+        }
+
+        Rental newRental = new Rental();
+        newRental.setCar(car);
+        newRental.setCustomer(customer);
+
+        LocalDate today = LocalDate.now();
+        newRental.setRentalDate(today);
+        newRental.setReturnDate(today.plusDays(rentalDays));
+
+        double totalPrice = car.getPricePerDay() * rentalDays;
+        newRental.setPrice(totalPrice);
+
+        newRental.setReturned(false);
+        car.setAvailable(false);
+
+        carRepository.save(car);
+        rentalRepository.save(newRental);
+
+        log.info("ADMIN created rental | customer {} | car {}", customerId, carId);
+
+        return convertToDTO(newRental);
+    }
+
     // Return a car
     public RentalDTO returnRental(int id) {
 
