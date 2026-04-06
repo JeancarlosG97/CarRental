@@ -10,7 +10,6 @@ public class RegisterRequestDTO {
     private String name;
     @Email
     private String email;
-    @Size(min = 6)
     private String password;
     private String phoneNumber;
 

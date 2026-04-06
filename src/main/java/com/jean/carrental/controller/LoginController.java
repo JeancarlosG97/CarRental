@@ -44,7 +44,7 @@ public class LoginController {
         Customer customer = new Customer();
         customer.setName(request.getName());
         customer.setEmail(request.getEmail());
-        customer.setPassword(passwordEncoder.encode(request.getPassword()));
+        customer.setPhoneNumber(request.getPhoneNumber());
 
         customer.setPassword(passwordEncoder.encode(request.getPassword()));
         customer.setRole(Role.USER);
