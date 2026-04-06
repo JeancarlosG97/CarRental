@@ -74,7 +74,7 @@ public class RentalController {
     @PreAuthorize("hasRole('ADMIN')")
     public RentalDTO adminRentCar(@PathVariable int customerId, @PathVariable int carId, @PathVariable int rentalDays){
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        log.info("ADMIN is manually creating a rental for customer {} | car {} | {} days", customerId, carId, rentalDays);
+        log.info("ADMIN {} is manually creating a rental for customer {} | car {} | {} days", email, customerId, carId, rentalDays);
         return rentalService.rentCarForCustomer(customerId, carId, rentalDays);
     }
 
