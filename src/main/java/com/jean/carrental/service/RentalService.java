@@ -189,10 +189,9 @@ public class RentalService {
     }
 
     public RentalDTO rentCarForCustomer(int customerId, int carId, int rentalDays) {
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        Customer customer = customerRepository.findByEmail(email)
-                .orElseThrow(() -> new CustomerNotFoundException(email));
+        Customer customer = customerRepository.findById(customerId)
+                .orElseThrow(() -> new CustomerNotFoundException(customerId));
 
         Car car = carRepository.findById(carId)
                 .orElseThrow(() -> new CarNotFoundException(carId));
