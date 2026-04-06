@@ -69,7 +69,7 @@ public class RentalController {
         return rentalService.rentCar(carId, rentalDays);
     }
 
-    @PostMapping("{customerId}/{carId}/{rentalDays}")
+    @PostMapping("/admin/{customerId}/{carId}/{rentalDays}")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasRole('ADMIN')")
     public RentalDTO adminRentCar(@PathVariable int customerId, @PathVariable int carId, @PathVariable int rentalDays){
