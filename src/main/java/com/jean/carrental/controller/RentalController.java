@@ -69,10 +69,13 @@ public class RentalController {
         return rentalService.rentCar(carId, rentalDays);
     }
 
-    public RentalDTO adminRentCar(@PathVariable int customerId, @PathVariable int carID, @PathVariable int rentalDays){
+    @PostMapping("{customerId}/{carId}/{rentalDays}")
+    @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasRole('ADMIN')")
+    public RentalDTO adminRentCar(@PathVariable int customerId, @PathVariable int carId, @PathVariable int rentalDays){
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        log.info("ADMIN is manually creating a rental for customer {} | car {} | {} days", customerId, carID, rentalDays);
-        return rentalService.rentCarForCustomer(customerId, carID, rentalDays);
+        log.info("ADMIN is manually creating a rental for customer {} | car {} | {} days", customerId, carId, rentalDays);
+        return rentalService.rentCarForCustomer(customerId, carId, rentalDays);
     }
 
     @DeleteMapping("/{id}")
