@@ -9,11 +9,11 @@ https://carrental-26hx.onrender.com/swagger-ui/index.html
 
 Admin
 Email: Jean@admin.com
-Password: Bani1809
+Password: Password
 
 User
 Email: Ange@User.com
-Password: Bani1809
+Password: Password
 
 ---
 
