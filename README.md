@@ -32,6 +32,8 @@ https://carrental-26hx.onrender.com/swagger-ui/index.html
 
 ## Key Endpoints
 
+*Note: This is a subset of core endpoints. Full API is available via Swagger UI.*
+
 ### Auth
 - `POST /auth/register`
 - `POST /auth/login`
