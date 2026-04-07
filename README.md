@@ -5,7 +5,7 @@ A **production-style backend system** built with **Spring Boot** that simulates 
 **Live API Documentation (Swagger):**
 https://carrental-26hx.onrender.com/swagger-ui/index.html
 
-**Admin Test Credentials / User Test Credentials
+*Admin Test Credentials / User Test Credentials
 
 Admin
 Email: Jean@admin.com
