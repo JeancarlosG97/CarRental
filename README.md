@@ -1,53 +1,93 @@
-# Car Rental API
+# Car Rental Management API
 
-## Overview
-A **Spring Boot** backend REST API for managing cars, customers, and rentals.  
-Demonstrates clean architecture, RESTful design, validation, error handling, JWT-based authentication, and MySQL integration.
+A production-style backend system demonstrating secure authentication, role-based access control, and real-world business logic using Spring Boot.
+
+---
+
+## Live Demo
+https://carrental-26hx.onrender.com/swagger-ui/index.html
+
+---
+
+## Highlights
+
+- JWT Authentication & Role-Based Access (USER vs ADMIN)
+- Rental system with real-world availability logic
+- Ownership enforcement (users can only access their own data)
+- Layered architecture (Controller → Service → Repository)
+- Deployed API with Swagger documentation
 
 ---
 
 ## Tech Stack
-- **Backend:** Spring Boot  
-- **Database:** MySQL (`CarRental`)  
-- **API Testing:** Postman  
-- **Version Control:** Git / Github 
-- **Other Features:** DTOs, `@Valid` validation, custom exceptions, JWT authentication, ResponseEntity HTTP responses  
+
+- Java, Spring Boot  
+- Spring Security + JWT  
+- MySQL (AWS RDS)  
+- Docker + Render  
+- Maven, Swagger (OpenAPI)
+- Postman
 
 ---
 
-## Key Features
-- **Cars Management:** CRUD operations with availability tracking  
-- **Customers Management:** CRUD operations with input validation  
-- **Rentals Management:** Create rentals, check availability, update rental status
-- **User Authentification: **JWT login with roles(USER, ADMIN) 
-- **Error Handling:** Centralized custom exceptions with meaningful HTTP responses  
-- **RESTful Design:** Thin controllers with all business logic in the service layer  
+## Key Endpoints
+
+### Auth
+- `POST /auth/register`
+- `POST /auth/login`
+
+### Cars
+- `GET /cars` *(USER, ADMIN)*
+- `POST /cars` *(ADMIN)*
+
+### Rentals
+- `POST /rentals/{carId}/{days}` *(USER, ADMIN)*
+- `POST /rentals/admin/{customerId}/{carId}/{days}` *(ADMIN)*
+- `PUT /rentals/{id}/return` *(OWNER or ADMIN)*
+
+### Customers
+- `GET /customers/me` *(USER, ADMIN)*
+- `GET /customers` *(ADMIN)*
 
 ---
 
-**Authentication Example
+## Security
 
-**Login Request
+- JWT-based authentication (stateless)
+- BCrypt password hashing
+- Role-based access with `@PreAuthorize`
+- Custom JWT filter for request validation
 
-- **POST /auth/login
-- **Content-Type: application/json
-    {
-      "username": "jean"
-      "password": "1234"
-    }
+---
 
-- **Login Response
-    {
-      "id": 1,
-      "username": "jean"
-      "role": "ADMIN",
-      "token":
-    }  "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJqZWFuIiwicm9sZSI6IkFETUlOIiwiaWF0IjoxNjc4MzgyNTYyLCJleHAiOjE2NzgzODYxNjJ9.xxxx"
+## Core Logic
 
+- Cars cannot be rented if unavailable  
+- Renting updates availability  
+- Returning restores availability  
+- Users can only access their own rentals  
+- Admins have full system access  
 
-## Architecture Highlights
-- **Controller Layer:** Handles HTTP requests  
-- **Service Layer:** Contains all business logic  
-- **Repository Layer:** Manages database access using Spring Data JPA  
-- **DTO Layer:** Ensures clean API responses and prevents direct entity exposure  
-- **Validation & Exceptions:** Improves reliability and maintainability  
+---
+
+## Deployment
+
+- Dockerized with multi-stage build  
+- Deployed on Render  
+- Connected to AWS RDS MySQL  
+
+---
+
+## What I Learned
+
+- Backend architecture design  
+- JWT authentication & authorization  
+- Ownership-based security  
+- Deploying production-ready APIs  
+
+---
+
+## Author
+
+**Jeancarlos Guerrero**  
+Aspiring Backend Java Developer  
