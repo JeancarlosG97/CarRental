@@ -188,6 +188,7 @@ public class RentalService {
         return convertToDTO(newRental);
     }
 
+    // Manual car renting via Admin
     public RentalDTO rentCarForCustomer(int customerId, int carId, int rentalDays) {
 
         Customer customer = customerRepository.findById(customerId)
@@ -228,6 +229,23 @@ public class RentalService {
         Rental rental = rentalRepository.findById(id)
                 .orElseThrow(() -> new RentalNotFoundException(id));
 
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        Customer currentUser = customerRepository.findByEmail(email)
+                .orElseThrow(() -> new CustomerNotFoundException(email));
+
+        boolean isAdmin = SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getAuthorities()
+                .stream()
+                .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
+
+        // Ownership check
+        if (!isAdmin && rental.getCustomer().getId() != currentUser.getId()) {
+            log.warn("User {} attempted to return rental {} that does not belong to them", email, id);
+            throw new RuntimeException("You are not allowed to return this rental");
+        }
+
         rental.setReturned(true);
 
         Car car = rental.getCar();
@@ -236,9 +254,13 @@ public class RentalService {
         carRepository.save(car);
 
         Rental updatedRental = rentalRepository.save(rental);
+
+        log.info("Rental {} successfully returned by {}", id, email);
+
         return convertToDTO(updatedRental);
     }
 
+    // Get own rental
     public List<RentalDTO> getMyRentals() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
 
