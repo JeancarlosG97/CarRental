@@ -7,6 +7,7 @@ import com.jean.carrental.repository.CustomerRepository;
 import com.jean.carrental.model.Customer;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -17,10 +18,12 @@ import java.util.stream.Collectors;
 @Slf4j
 public class CustomerService {
 
-    public final CustomerRepository customerRepository;
+    private final CustomerRepository customerRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public CustomerService(CustomerRepository customerRepository) {
+    public CustomerService(CustomerRepository customerRepository, PasswordEncoder passwordEncoder) {
         this.customerRepository = customerRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public List<CustomerDTO> getAllCustomers() {
@@ -110,9 +113,15 @@ public class CustomerService {
                 });
 
         // Update only the allowed fields
-        existingCustomer.setName(updatedCustomer.getName());
-        existingCustomer.setPhoneNumber(updatedCustomer.getPhoneNumber());
-        existingCustomer.setPassword(updatedCustomer.getPassword()); // optional if you allow password update
+        if(updatedCustomer.getName() != null) {
+            existingCustomer.setName(updatedCustomer.getName());
+        }
+        if (updatedCustomer.getPhoneNumber() != null) {
+            existingCustomer.setPhoneNumber(updatedCustomer.getPhoneNumber());
+        }
+        if(updatedCustomer.getPassword() != null && !updatedCustomer.getPassword().isBlank()) {
+            existingCustomer.setPassword(passwordEncoder.encode(updatedCustomer.getPassword()));
+        }
 
         Customer savedCustomer = customerRepository.save(existingCustomer);
         log.info("Updated customer with email: {}", email);

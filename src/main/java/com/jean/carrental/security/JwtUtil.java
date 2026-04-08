@@ -14,10 +14,10 @@ import java.util.Date;
 public class JwtUtil {
 
     @Value("${jwt.secret}")
-    private String secret; // e.g., "my-super-secret-key-which-is-at-least-32-characters"
+    private String secret;
 
     @Value("${jwt.expiration}")
-    private long expiration; // in ms, e.g., 86400000 for 1 day
+    private long expiration;
 
     private Key getSigningKey() {
         return Keys.hmacShaKeyFor(secret.getBytes());
