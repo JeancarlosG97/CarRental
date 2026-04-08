@@ -8,7 +8,7 @@ https://carrental-26hx.onrender.com/swagger-ui/index.html
 Admin Test Credentials / User Test Credentials
 
 Admin
-Email: Jean@admin.com
+Email: Jean@Admin.com
 Password: Password123
 
 User
