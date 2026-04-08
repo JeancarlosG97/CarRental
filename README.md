@@ -9,11 +9,11 @@ Admin Test Credentials / User Test Credentials
 
 Admin
 Email: Jean@admin.com
-Password: Password
+Password: Password123
 
 User
 Email: Ange@User.com
-Password: Password
+Password: Password123
 
 ---
 
