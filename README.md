@@ -1,156 +1,121 @@
 # Car Rental Management API
 
-A **production-style backend system** built with **Spring Boot** that simulates a real-world car rental service. This project focuses on secure authentication, role-based access control, and enforcing business rules such as availability and ownership.
+A production-ready REST API built with Spring Boot simulating a real-world car rental service. Focuses on secure authentication, role-based access, and enforcing business rules like availability and ownership.
 
-**Live API Documentation (Swagger):**
-https://carrental-26hx.onrender.com/swagger-ui/index.html
-
-Admin Test Credentials / User Test Credentials
-
-Admin
-Email: Jean@Admin.com
-Password: Password123
-
-User
-Email: Ange@User.com
-Password: Password123
+Live API Documentation (Swagger): [https://carrental-26hx.onrender.com/swagger-ui/index.html](https://carrental-26hx.onrender.com/swagger-ui/index.html)
 
 ---
 
-## Overview
+## Demo Credentials
 
-This API allows users to:
+**Admin Account:**  
+Email: `admin@demo.com`  
+Password: `Password123`
 
-* Register and authenticate
-* Browse available cars
-* Create and manage rental bookings
+**User Account:**  
+Email: `user@demo.com`  
+Password: `Password123`
 
-It also includes **administrative functionality** for managing inventory and customer rentals.
+> You can also register new accounts via `/auth/register`.
 
-The system is designed to reflect real backend constraints:
+---
 
-* Preventing **double-booking** of cars
-* Enforcing **ownership of resources**
-* Supporting **administrative overrides**
+## Quick Overview
+
+This API enables users to:
+
+- Register and authenticate with JWT
+- Browse cars and manage rentals
+- Return cars and update availability
+
+Administrators can:
+
+- Manage cars and rentals for any customer
+- View all customer profiles
+- Override constraints when necessary
+
+Key backend features:
+
+- Stateless JWT authentication  
+- Role-based access control (`USER`, `ADMIN`)  
+- Ownership enforcement on rentals  
+- Availability constraints to prevent double-booking  
 
 ---
 
 ## Tech Stack
 
-* **Backend:** Java, Spring Boot
-* **Security:** Spring Security, JWT (stateless authentication)
-* **Database:** MySQL (AWS RDS)
-* **Deployment:** Docker, Render
-* **Build Tool:** Maven
-* **API Testing & Documentation:** Swagger (OpenAPI), Postman
+- **Java** + **Spring Boot**  
+- **Spring Security**, JWT, BCrypt  
+- **MySQL** (AWS RDS)  
+- **Docker**, Render  
+- **Swagger / Postman** for testing  
 
 ---
 
-## Security Features
+## Core Endpoints
 
-* JWT-based authentication with **stateless session management**
-* **BCrypt** password hashing
-* **Role-based access control** (`USER`, `ADMIN`)
-* Method-level authorization using `@PreAuthorize`
-* Custom JWT filter for **token validation and request processing**
+> This is a subset of endpoints; full API is available via Swagger UI.
 
----
+**Authentication:**  
+- `POST /auth/register` — Sign up  
+- `POST /auth/login` — Receive JWT  
 
-## Core Business Logic
+**Cars:**  
+- `GET /cars` — List all cars (USER, ADMIN)  
+- `POST /cars` — Create car (ADMIN only)  
 
-This project goes beyond basic CRUD operations by enforcing real-world constraints:
+**Rentals:**  
+- `POST /rentals/{carId}/{days}` — Rent car (USER)  
+- `POST /rentals/{customerId}/{carId}/{days}` — Admin creates rental  
+- `PUT /rentals/{id}/return` — Return a car (OWNER or ADMIN)  
 
-* Cars **cannot be rented** if they are unavailable
-* Renting a car **updates its availability status**
-* Returning a car **restores availability**
-* Users can only access and modify **their own rentals**
-* Administrators have **full access** to all system resources
-
----
-
-## Architecture
-
-The application follows a layered architecture:
-
-**Controller → Service → Repository**
-
-* **Controller Layer:** Handles HTTP requests and responses
-* **Service Layer:** Contains business logic and validation
-* **Repository Layer:** Manages database interaction using JPA
+**Customers:**  
+- `GET /customers/me` — Current user profile  
+- `PUT /customers/me` — Update profile  
+- `GET /customers` — All customers (ADMIN only)  
 
 ---
 
-## Key Endpoints
+## Architecture & Design
 
-> Note: This is a subset of core endpoints. The full API is available via Swagger UI.
+- **Layered architecture:** Controller → Service → Repository  
+- **Controllers** handle HTTP requests  
+- **Services** implement business logic & validation  
+- **Repositories** manage database interactions  
 
-### Authentication
+Business rules enforced:
 
-* `POST /auth/register` — Register a new user
-* `POST /auth/login` — Authenticate and receive a JWT
-
-### Cars
-
-* `GET /cars` — Retrieve all cars (**USER, ADMIN**)
-* `POST /cars` — Create a new car (**ADMIN only**)
-
-### Rentals
-
-* `POST /rentals/{carId}/{days}` — Create a rental (**USER**)
-* `POST /rentals/admin/{customerId}/{carId}/{days}` — Admin creates rental
-* `PUT /rentals/{id}/return` — Return a car (**OWNER or ADMIN**)
-
-### Customers
-
-* `GET /customers/me` — Retrieve current user profile
-* `GET /customers` — Retrieve all customers (**ADMIN only**)
+- Rentals only for available cars  
+- Ownership checks prevent users from modifying others’ rentals  
+- Admins have full system access  
 
 ---
 
-## Deployment
+## Highlights for Recruiters
 
-* Dockerized using a **multi-stage build**
-* Deployed on **Render**
-* Connected to **AWS RDS MySQL** database
-
----
-
-## Challenges and Design Decisions
-
-* Implemented **ownership-based access control** to ensure users cannot access or modify other users’ rentals
-* Designed **stateless authentication** using JWT, requiring validation on every request
-* Enforced **availability constraints** to prevent invalid rental states
-* Structured the application with clear **separation of concerns** across layers
+- **JWT + Spring Security:** Stateless, role-based authentication  
+- **Global exception handling:** Standardized error responses  
+- **Ownership enforcement:** Users can only modify their own rentals  
+- **Production-style constraints:** Availability & rental rules  
 
 ---
 
-## Future Improvements
+## Potential Enhancements
 
-* Add **transaction history tracking** for rentals
-* Implement **pagination and filtering** for large datasets
-* Add **unit and integration testing** (JUnit, Mockito)
-* Introduce **global exception handling** and standardized error responses
-* Explore caching (e.g., Redis) for performance optimization
-
----
-
-## Example Flow
-
-1. User registers and logs in
-2. Receives a **JWT token**
-3. Uses the token to access **protected endpoints**
-4. Creates a rental, updating car availability
-5. Returns the car, restoring availability
+- Rental transaction history  
+- Pagination and filtering for large datasets  
+- Unit & integration testing (JUnit, Mockito)  
+- Caching for performance (Redis)  
 
 ---
 
 ## Author
 
-**Jeancarlos Guerrero**
-Aspiring Backend Java Developer
+**Jeancarlos Guerrero** — Aspiring Backend Java Developer  
 
 ---
 
 ## About
 
-This project was built to simulate a real-world backend system and strengthen skills in **backend architecture, authentication, and API design** using Spring Boot.
+A real-world backend system demonstrating authentication, API design, and business logic enforcement in Spring Boot.
