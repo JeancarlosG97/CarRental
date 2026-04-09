@@ -12,6 +12,12 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/*
+ * REST controller for managing car-related operations.
+ * Provides endpoints for retrieving, creating, updating, and deleting cars.
+ * Access is restricted based on user roles (USER, ADMIN)
+ */
+
 @RestController
 @RequestMapping("/cars")
 @Slf4j
@@ -23,6 +29,12 @@ public class CarController {
         this.carService = carService;
     }
 
+    /**
+     * Retrieves all cars in the system.
+     * Accessible by both USER and ADMIN roles.
+     *
+     * @return list of all cars as CarDTO objects
+     */
     @GetMapping
     @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public List<CarDTO> getAllCars() {
@@ -31,6 +43,12 @@ public class CarController {
         return carService.getAllCars();
     }
 
+    /**
+     * Retrieves all cars in the system.
+     * Accessible by both USER and ADMIN roles.
+     *
+     * @return list of all cars as CarDTO objects
+     */
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public CarDTO getCarById(@PathVariable int id) {
@@ -39,6 +57,13 @@ public class CarController {
         return carService.getCarById(id);
     }
 
+    /**
+     * Creates a new car in the system.
+     * Only accessible by ADMIN users.
+     *
+     * @param car the car object to be created
+     * @return the created car as a CarDTO
+     */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasRole('ADMIN')")
@@ -48,6 +73,14 @@ public class CarController {
         return carService.addCar(car);
     }
 
+    /**
+     * Updates an existing car by its ID.
+     * Only accessible by ADMIN users.
+     *
+     * @param id the ID of the car to update
+     * @param car the updated car data
+     * @return the updated car as a CarDTO
+     */
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public CarDTO updateCar(@PathVariable int id, @Valid @RequestBody Car car) {
@@ -56,6 +89,12 @@ public class CarController {
         return carService.updateCar(id, car);
     }
 
+    /**
+     * Deletes a car by its ID.
+     * Only accessible by ADMIN users.
+     *
+     * @param id the ID of the car to delete
+     */
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasRole('ADMIN')")
