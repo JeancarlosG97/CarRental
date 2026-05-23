@@ -112,7 +112,7 @@ Business rules enforced:
 
 ## Author
 
-**Jeancarlos Guerrero** — Aspiring Backend Java Developer  
+**Jeancarlos Guerrero** — Backend Java Developer  
 
 ---
 
