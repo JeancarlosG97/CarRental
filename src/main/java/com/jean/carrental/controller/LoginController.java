@@ -20,6 +20,7 @@ import java.util.Optional;
  * Provides endpoints for user registration and login.
  * Implements password hashing and JWT-based authentication.
  */
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/auth")
 @Slf4j
