@@ -64,7 +64,8 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
 
         configuration.setAllowedOrigins(
-                List.of("http://localhost:5173")
+                List.of("http://localhost:5173",
+                        "https://car-rental-ui-s1hb.onrender.com")
         );
 
         configuration.setAllowedMethods(
@@ -78,6 +79,8 @@ public class SecurityConfig {
         );
 
         configuration.setAllowedHeaders(List.of("*"));
+
+        configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source =
                 new UrlBasedCorsConfigurationSource();
