@@ -1,9 +1,10 @@
 # Car Rental Management API
 
-A production-ready REST API built with Spring Boot simulating a real-world car rental service. Focuses on secure authentication, role-based access, and enforcing business rules like availability and ownership.
+Production-ready REST API built with Spring Boot, Spring Security,
+JWT authentication, and MySQL..
 
-Live API Documentation (Swagger): [https://carrental-26hx.onrender.com/swagger-ui/index.html](https://carrental-26hx.onrender.com/swagger-ui/index.html)
-
+Live API Documentation (Swagger): https://carrental-26hx.onrender.com/swagger-ui/index.html
+##Frontend Application : https://car-rental-ui-s1hb.onrender.com/
 ---
 
 ## Demo Credentials
